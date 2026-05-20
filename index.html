@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📦 Order Picker – English Practice</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", Arial, sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.5; }
+
+    header {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      color: white; padding: 1.5rem 2rem;
+    }
+    header h1 { font-size: 1.35rem; font-weight: 700; }
+    header p { font-size: 0.85rem; opacity: 0.8; margin-top: 0.3rem; }
+
+    main { max-width: 860px; margin: 2rem auto; padding: 0 1rem 3rem; }
+
+    /* ── Vocab reference ── */
+    details {
+      background: white; border: 1px solid #e2e8f0; border-radius: 10px;
+      margin-bottom: 1.5rem; overflow: hidden;
+    }
+    summary {
+      padding: 0.9rem 1.25rem; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+      color: #1e40af; user-select: none; list-style: none;
+    }
+    summary::before { content: "▶ "; font-size: 0.7rem; }
+    details[open] summary::before { content: "▼ "; }
+    .vocab-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0 1.25rem 1rem;
+    }
+    @media (max-width: 600px) { .vocab-grid { grid-template-columns: 1fr; } }
+    .vocab-item {
+      display: flex; gap: 0.5rem; font-size: 0.88rem; padding: 0.35rem 0;
+      border-bottom: 1px solid #f1f5f9; align-items: baseline;
+    }
+    .vocab-num { color: #94a3b8; min-width: 1.8rem; font-size: 0.8rem; }
+    .vocab-fr { min-width: 0; flex: 1; }
+    .vocab-arrow { color: #cbd5e1; margin: 0 0.3rem; }
+    .vocab-en { color: #1d4ed8; font-style: italic; }
+
+    /* ── Exercise sections ── */
+    section {
+      background: white; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 1.5rem 1.5rem 1.25rem; margin-bottom: 1.5rem;
+    }
+    section h2 { font-size: 1.05rem; color: #1e3a8a; margin-bottom: 0.3rem; }
+    .instruction { font-size: 0.85rem; color: #64748b; margin-bottom: 1rem; }
+
+    /* ── Matching ── */
+    .match-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 0.55rem; font-size: 0.9rem;
+    }
+    .match-letter {
+      font-weight: 700; color: #475569; min-width: 1.4rem;
+      background: #f1f5f9; padding: 0.1rem 0.4rem; border-radius: 4px;
+      font-size: 0.8rem; text-align: center;
+    }
+    .match-fr { flex: 1; min-width: 0; }
+    .match-select {
+      flex: 1; min-width: 0; padding: 0.35rem 0.5rem;
+      border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;
+      background: white; color: #1e293b; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .match-select:focus { outline: none; border-color: #3b82f6; }
+    .match-select.correct { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+    .match-select.wrong   { border-color: #dc2626; background: #fef2f2; color: #b91c1c; }
+
+    /* ── Gap-fill ── */
+    .word-bank {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;
+      padding: 0.6rem 1rem; margin-bottom: 1rem; font-size: 0.87rem; color: #1e40af;
+    }
+    .word-bank span { font-weight: 600; color: #1e293b; margin-right: 0.4rem; }
+    .gap-item {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem 0.4rem;
+      margin-bottom: 0.65rem; font-size: 0.91rem;
+    }
+    .gap-num { font-weight: 700; color: #475569; min-width: 1.4rem; }
+    .gap-select {
+      padding: 0.25rem 0.5rem; border: 1.5px solid #cbd5e1; border-radius: 6px;
+      font-size: 0.88rem; background: white; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .gap-select:focus { outline: none; border-color: #3b82f6; }
+    .gap-select.correct { border-color: #16a34a; background: #f0fdf4; color: #15803d; font-weight: 600; }
+    .gap-select.wrong   { border-color: #dc2626; background: #fef2f2; color: #b91c1c; }
+
+    /* ── True / False ── */
+    .tf-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      margin-bottom: 0.7rem; font-size: 0.91rem;
+    }
+    .tf-num { font-weight: 700; color: #475569; min-width: 1.4rem; padding-top: 0.2rem; }
+    .tf-stmt { flex: 1; padding-top: 0.2rem; }
+    .tf-btns { display: flex; gap: 0.4rem; flex-shrink: 0; }
+    .tf-btn {
+      padding: 0.25rem 0.75rem; border: 1.5px solid #cbd5e1; border-radius: 6px;
+      cursor: pointer; font-size: 0.82rem; background: white; font-weight: 500;
+      transition: all 0.15s;
+    }
+    .tf-btn:hover { background: #f1f5f9; }
+    .tf-btn.selected { background: #dbeafe; border-color: #3b82f6; color: #1d4ed8; }
+    .tf-btn.correct  { background: #f0fdf4; border-color: #16a34a; color: #15803d; font-weight: 700; }
+    .tf-btn.wrong    { background: #fef2f2; border-color: #dc2626; color: #b91c1c; font-weight: 700; }
+
+    /* ── Speaking ── */
+    .speak-list { list-style: none; }
+    .speak-list li {
+      padding: 0.7rem 1rem 0.7rem 1.1rem; background: #eff6ff;
+      border-left: 3px solid #3b82f6; border-radius: 0 6px 6px 0;
+      margin-bottom: 0.6rem; font-size: 0.92rem; color: #1e3a8a;
+    }
+
+    /* ── Buttons & score ── */
+    .actions { margin-top: 1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .check-btn {
+      padding: 0.5rem 1.5rem; background: #1d4ed8; color: white;
+      border: none; border-radius: 7px; cursor: pointer; font-size: 0.92rem;
+      font-weight: 600; transition: background 0.15s;
+    }
+    .check-btn:hover { background: #1e40af; }
+    .reset-btn {
+      padding: 0.5rem 1rem; background: white; color: #475569;
+      border: 1.5px solid #cbd5e1; border-radius: 7px; cursor: pointer;
+      font-size: 0.88rem; transition: background 0.15s;
+    }
+    .reset-btn:hover { background: #f8fafc; }
+    .score { font-weight: 700; font-size: 0.95rem; }
+    .score.perfect { color: #16a34a; }
+    .score.good    { color: #ca8a04; }
+    .score.bad     { color: #dc2626; }
+
+    .answer-key-note {
+      font-size: 0.78rem; color: #94a3b8; margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📦 Order Picker – English Vocabulary Practice</h1>
+  <p>Promotrans · BP Logistique 3 · Warehouse English</p>
+</header>
+
+<main>
+
+  <!-- ── Vocabulary reference ── -->
+  <details id="vocab-ref">
+    <summary>📖 Vocabulary Reference (16 tasks)</summary>
+    <div class="vocab-grid" id="vocab-grid"></div>
+  </details>
+
+  <!-- ── Exercise 1: Matching ── -->
+  <section id="ex-match">
+    <h2>🔗 Exercise 1 – Matching</h2>
+    <p class="instruction">For each French task, select the correct English translation.</p>
+    <div id="match-rows"></div>
+    <div class="actions">
+      <button class="check-btn" onclick="checkMatching()">Check answers</button>
+      <button class="reset-btn" onclick="resetMatching()">Reset</button>
+      <span class="score" id="match-score"></span>
+    </div>
+    <p class="answer-key-note" id="match-key"></p>
+  </section>
+
+  <!-- ── Exercise 2: Gap-fill ── -->
+  <section id="ex-gap">
+    <h2>🧩 Exercise 2 – Gap-Fill</h2>
+    <p class="instruction">Choose the correct word from the word bank to complete each sentence.</p>
+    <div class="word-bank"><span>Word bank:</span>put on · read · receive · pick · scan · check · use · operate · label · move · report · follow</div>
+    <div id="gap-rows"></div>
+    <div class="actions">
+      <button class="check-btn" onclick="checkGap()">Check answers</button>
+      <button class="reset-btn" onclick="resetGap()">Reset</button>
+      <span class="score" id="gap-score"></span>
+    </div>
+  </section>
+
+  <!-- ── Exercise 3: True or False ── -->
+  <section id="ex-tf">
+    <h2>✅ Exercise 3 – True or False</h2>
+    <p class="instruction">Is each statement true or false?</p>
+    <div id="tf-rows"></div>
+    <div class="actions">
+      <button class="check-btn" onclick="checkTF()">Check answers</button>
+      <button class="reset-btn" onclick="resetTF()">Reset</button>
+      <span class="score" id="tf-score"></span>
+    </div>
+  </section>
+
+  <!-- ── Exercise 4: Speaking Practice ── -->
+  <section id="ex-speak">
+    <h2>💬 Exercise 4 – Speaking Practice</h2>
+    <p class="instruction">Discuss these questions with a partner or prepare a short spoken answer.</p>
+    <ul class="speak-list" id="speak-list"></ul>
+  </section>
+
+</main>
+
+<script>
+// ── Data ────────────────────────────────────────────────────────────────────
+
+const VOCAB = [
+  { fr: "Mettre ses EPI",                                          en: "Put on your PPE" },
+  { fr: "Lire la commande",                                        en: "Read the order" },
+  { fr: "Réceptionner les marchandises dans la zone de réception", en: "Receive goods in the receiving area" },
+  { fr: "Trouver les produits dans l’entrepôt",              en: "Find the products in the warehouse" },
+  { fr: "Prélever les bons articles",                              en: "Pick the correct items" },
+  { fr: "Vérifier la quantité",                                    en: "Check the quantity" },
+  { fr: "Utiliser un scanner",                                     en: "Use a scanner" },
+  { fr: "Utiliser un transpalette pour déplacer des charges",      en: "Use a pallet jack to move loads" },
+  { fr: "Conduire un chariot élévateur en toute sécurité",        en: "Operate a forklift safely" },
+  { fr: "Mettre les articles dans une boîte ou sur une palette",  en: "Put items in a box or on a pallet" },
+  { fr: "Étiqueter le colis",                                      en: "Label the package" },
+  { fr: "Déplacer la commande vers la zone d’expédition",    en: "Move the order to the shipping area" },
+  { fr: "Reconditionner certains produits",                        en: "Repack some products" },
+  { fr: "Signaler les produits endommagés ou manquants",           en: "Report damaged or missing products" },
+  { fr: "Garder la zone de travail propre",                        en: "Keep the work area clean" },
+  { fr: "Respecter les règles de sécurité",                        en: "Follow safety rules" },
+];
+
+// Shuffled English options for the matching dropdown
+const MATCH_EN_OPTIONS = [
+  "Use a scanner",                       // 0 → correct for G (index 6)
+  "Keep the work area clean",            // 1 → correct for O (index 14)
+  "Label the package",                   // 2 → correct for K (index 10)
+  "Follow safety rules",                 // 3 → correct for P (index 15)
+  "Check the quantity",                  // 4 → correct for F (index 5)
+  "Move the order to the shipping area", // 5 → correct for L (index 11)
+  "Read the order",                      // 6 → correct for B (index 1)
+  "Find the products in the warehouse",  // 7 → correct for D (index 3)
+  "Repack some products",                // 8 → correct for M (index 12)
+  "Put on your PPE",                     // 9 → correct for A (index 0)
+  "Receive goods in the receiving area", // 10 → correct for C (index 2)
+  "Pick the correct items",              // 11 → correct for E (index 4)
+  "Use a pallet jack to move loads",     // 12 → correct for H (index 7)
+  "Operate a forklift safely",           // 13 → correct for I (index 8)
+  "Put items in a box or on a pallet",   // 14 → correct for J (index 9)
+  "Report damaged or missing products",  // 15 → correct for N (index 13)
+];
+
+// For each French item (A–P, index 0–15), the index in MATCH_EN_OPTIONS that is correct
+const MATCH_ANSWERS = [9, 6, 10, 7, 11, 4, 0, 12, 13, 14, 2, 5, 8, 15, 1, 3];
+
+const GAP_ITEMS = [
+  { pre: "You must ",              blank: "put on",  post: " your PPE before starting work." },
+  { pre: "",                       blank: "read",    post: " the order before you start picking." },
+  { pre: "",                       blank: "receive", post: " goods in the receiving area when the truck arrives." },
+  { pre: "",                       blank: "pick",    post: " the correct items from the shelves." },
+  { pre: "",                       blank: "scan",    post: " the barcode with the scanner." },
+  { pre: "",                       blank: "check",   post: " the quantity of each product." },
+  { pre: "",                       blank: "use",     post: " a pallet jack to move heavy loads." },
+  { pre: "",                       blank: "operate", post: " the forklift safely at all times." },
+  { pre: "",                       blank: "label",   post: " the package before shipping." },
+  { pre: "",                       blank: "move",    post: " the order to the shipping area." },
+  { pre: "",                       blank: "report",  post: " damaged or missing products immediately." },
+  { pre: "",                       blank: "follow",  post: " safety rules at all times." },
+];
+const GAP_BANK = ["put on","read","receive","pick","scan","check","use","operate","label","move","report","follow"];
+
+const TF_ITEMS = [
+  { stmt: "An order picker never repacks products.",                   answer: false },
+  { stmt: "Safety rules are important in the warehouse.",              answer: true  },
+  { stmt: "You should label the package before shipping.",             answer: true  },
+  { stmt: "Keeping the work area clean is not necessary.",             answer: false },
+  { stmt: "You must find the correct products.",                       answer: true  },
+  { stmt: "PPE must be put on before starting work.",                  answer: true  },
+  { stmt: "A pallet jack is used to reach products on high shelves.",  answer: false },
+  { stmt: "You should report damaged or missing products.",            answer: true  },
+];
+
+const SPEAKING = [
+  "What do you do first when you arrive at work?",
+  "What do you do when you receive an order?",
+  "When do you use a pallet jack or a forklift?",
+  "Why is it important to check the quantity?",
+  "What do you do when you find a damaged or missing product?",
+];
+
+// ── Build vocabulary grid ───────────────────────────────────────────────────
+const vocabGrid = document.getElementById("vocab-grid");
+VOCAB.forEach((v, i) => {
+  vocabGrid.innerHTML += `
+    <div class="vocab-item">
+      <span class="vocab-num">${i + 1}.</span>
+      <span class="vocab-fr">${v.fr}</span>
+      <span class="vocab-arrow">→</span>
+      <span class="vocab-en">${v.en}</span>
+    </div>`;
+});
+
+// ── Build matching rows ─────────────────────────────────────────────────────
+const matchRows = document.getElementById("match-rows");
+const letters = "ABCDEFGHIJKLMNOP";
+VOCAB.forEach((v, i) => {
+  const opts = MATCH_EN_OPTIONS.map((en, j) =>
+    `<option value="${j}">${en}</option>`
+  ).join("");
+  matchRows.innerHTML += `
+    <div class="match-row">
+      <span class="match-letter">${letters[i]}</span>
+      <span class="match-fr">${v.fr}</span>
+      <select class="match-select" id="ms-${i}">
+        <option value="">— select —</option>
+        ${opts}
+      </select>
+    </div>`;
+});
+
+function checkMatching() {
+  let correct = 0;
+  VOCAB.forEach((_, i) => {
+    const sel = document.getElementById(`ms-${i}`);
+    sel.classList.remove("correct","wrong");
+    if (sel.value === "") return;
+    if (parseInt(sel.value) === MATCH_ANSWERS[i]) {
+      sel.classList.add("correct"); correct++;
+    } else {
+      sel.classList.add("wrong");
+    }
+  });
+  const total = VOCAB.length;
+  const score = document.getElementById("match-score");
+  score.textContent = `${correct} / ${total}`;
+  score.className = "score " + (correct === total ? "perfect" : correct >= total * 0.7 ? "good" : "bad");
+  // Show answer key for wrong ones
+  const key = document.getElementById("match-key");
+  const wrongs = [];
+  VOCAB.forEach((_, i) => {
+    const sel = document.getElementById(`ms-${i}`);
+    if (sel.value !== "" && parseInt(sel.value) !== MATCH_ANSWERS[i]) {
+      wrongs.push(`${letters[i]} → ${MATCH_EN_OPTIONS[MATCH_ANSWERS[i]]}`);
+    }
+  });
+  key.textContent = wrongs.length ? "Corrections: " + wrongs.join(" | ") : "";
+}
+
+function resetMatching() {
+  VOCAB.forEach((_, i) => {
+    const sel = document.getElementById(`ms-${i}`);
+    sel.value = ""; sel.classList.remove("correct","wrong");
+  });
+  document.getElementById("match-score").textContent = "";
+  document.getElementById("match-key").textContent = "";
+}
+
+// ── Build gap-fill rows ─────────────────────────────────────────────────────
+const gapRows = document.getElementById("gap-rows");
+GAP_ITEMS.forEach((g, i) => {
+  const opts = GAP_BANK.map(w => `<option value="${w}">${w}</option>`).join("");
+  const capitalize = g.pre === "";
+  const displayPre = capitalize
+    ? ""
+    : g.pre;
+  const capNote = capitalize ? `<span style="color:#94a3b8;font-size:0.78rem">[capital]</span> ` : "";
+  gapRows.innerHTML += `
+    <div class="gap-item">
+      <span class="gap-num">${i + 1}.</span>
+      ${capNote}${displayPre}<select class="gap-select" id="gs-${i}">
+        <option value="">—</option>
+        ${opts}
+      </select>${g.post}
+    </div>`;
+});
+
+function checkGap() {
+  let correct = 0;
+  GAP_ITEMS.forEach((g, i) => {
+    const sel = document.getElementById(`gs-${i}`);
+    sel.classList.remove("correct","wrong");
+    if (sel.value === "") return;
+    if (sel.value.toLowerCase() === g.blank.toLowerCase()) {
+      sel.classList.add("correct"); correct++;
+    } else {
+      sel.classList.add("wrong");
+    }
+  });
+  const total = GAP_ITEMS.length;
+  const score = document.getElementById("gap-score");
+  score.textContent = `${correct} / ${total}`;
+  score.className = "score " + (correct === total ? "perfect" : correct >= total * 0.7 ? "good" : "bad");
+}
+
+function resetGap() {
+  GAP_ITEMS.forEach((_, i) => {
+    const sel = document.getElementById(`gs-${i}`);
+    sel.value = ""; sel.classList.remove("correct","wrong");
+  });
+  document.getElementById("gap-score").textContent = "";
+}
+
+// ── Build T/F rows ──────────────────────────────────────────────────────────
+const tfRows = document.getElementById("tf-rows");
+TF_ITEMS.forEach((item, i) => {
+  tfRows.innerHTML += `
+    <div class="tf-item">
+      <span class="tf-num">${i + 1}.</span>
+      <span class="tf-stmt">${item.stmt}</span>
+      <span class="tf-btns">
+        <button class="tf-btn" id="tf-${i}-t" onclick="selectTF(${i}, true)">True</button>
+        <button class="tf-btn" id="tf-${i}-f" onclick="selectTF(${i}, false)">False</button>
+      </span>
+    </div>`;
+});
+
+const tfSelected = new Array(TF_ITEMS.length).fill(null);
+
+function selectTF(i, val) {
+  tfSelected[i] = val;
+  const t = document.getElementById(`tf-${i}-t`);
+  const f = document.getElementById(`tf-${i}-f`);
+  t.classList.toggle("selected", val === true);
+  f.classList.toggle("selected", val === false);
+  // Remove check styling on re-click
+  t.classList.remove("correct","wrong");
+  f.classList.remove("correct","wrong");
+}
+
+function checkTF() {
+  let correct = 0;
+  TF_ITEMS.forEach((item, i) => {
+    const t = document.getElementById(`tf-${i}-t`);
+    const f = document.getElementById(`tf-${i}-f`);
+    t.classList.remove("correct","wrong","selected");
+    f.classList.remove("correct","wrong","selected");
+    if (tfSelected[i] === null) return;
+    const isCorrect = tfSelected[i] === item.answer;
+    if (isCorrect) correct++;
+    // highlight chosen button
+    const chosen = tfSelected[i] ? t : f;
+    chosen.classList.add(isCorrect ? "correct" : "wrong");
+    // highlight correct answer if wrong
+    if (!isCorrect) {
+      const correctBtn = item.answer ? t : f;
+      correctBtn.classList.add("correct");
+    }
+  });
+  const total = TF_ITEMS.length;
+  const score = document.getElementById("tf-score");
+  score.textContent = `${correct} / ${total}`;
+  score.className = "score " + (correct === total ? "perfect" : correct >= total * 0.7 ? "good" : "bad");
+}
+
+function resetTF() {
+  TF_ITEMS.forEach((_, i) => {
+    tfSelected[i] = null;
+    ["t","f"].forEach(s => {
+      const btn = document.getElementById(`tf-${i}-${s}`);
+      btn.classList.remove("correct","wrong","selected");
+    });
+  });
+  document.getElementById("tf-score").textContent = "";
+}
+
+// ── Build speaking list ─────────────────────────────────────────────────────
+const speakList = document.getElementById("speak-list");
+SPEAKING.forEach(q => {
+  speakList.innerHTML += `<li>${q}</li>`;
+});
+</script>
+
+</body>
+</html>

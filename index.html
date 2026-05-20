@@ -224,28 +224,25 @@ const VOCAB = [
   { fr: "Respecter les règles de sécurité",                        en: "Follow safety rules" },
 ];
 
-// Shuffled English options for the matching dropdown
-const MATCH_EN_OPTIONS = [
-  "Use a scanner",                       // 0 → correct for G (index 6)
-  "Keep the work area clean",            // 1 → correct for O (index 14)
-  "Label the package",                   // 2 → correct for K (index 10)
-  "Follow safety rules",                 // 3 → correct for P (index 15)
-  "Check the quantity",                  // 4 → correct for F (index 5)
-  "Move the order to the shipping area", // 5 → correct for L (index 11)
-  "Read the order",                      // 6 → correct for B (index 1)
-  "Find the products in the warehouse",  // 7 → correct for D (index 3)
-  "Repack some products",                // 8 → correct for M (index 12)
-  "Put on your PPE",                     // 9 → correct for A (index 0)
-  "Receive goods in the receiving area", // 10 → correct for C (index 2)
-  "Pick the correct items",              // 11 → correct for E (index 4)
-  "Use a pallet jack to move loads",     // 12 → correct for H (index 7)
-  "Operate a forklift safely",           // 13 → correct for I (index 8)
-  "Put items in a box or on a pallet",   // 14 → correct for J (index 9)
-  "Report damaged or missing products",  // 15 → correct for N (index 13)
+// Per-item: 4 English options + index of correct answer
+const MATCH_ITEMS = [
+  { opts: ["Put on your PPE", "Read the order", "Follow safety rules", "Use a scanner"], ans: 0 },
+  { opts: ["Check the quantity", "Read the order", "Label the package", "Pick the correct items"], ans: 1 },
+  { opts: ["Move the order to the shipping area", "Keep the work area clean", "Receive goods in the receiving area", "Find the products in the warehouse"], ans: 2 },
+  { opts: ["Find the products in the warehouse", "Pick the correct items", "Use a scanner", "Receive goods in the receiving area"], ans: 0 },
+  { opts: ["Check the quantity", "Find the products in the warehouse", "Label the package", "Pick the correct items"], ans: 3 },
+  { opts: ["Pick the correct items", "Check the quantity", "Read the order", "Report damaged or missing products"], ans: 1 },
+  { opts: ["Use a pallet jack to move loads", "Check the quantity", "Use a scanner", "Label the package"], ans: 2 },
+  { opts: ["Use a pallet jack to move loads", "Operate a forklift safely", "Use a scanner", "Move the order to the shipping area"], ans: 0 },
+  { opts: ["Use a pallet jack to move loads", "Follow safety rules", "Put on your PPE", "Operate a forklift safely"], ans: 3 },
+  { opts: ["Label the package", "Put items in a box or on a pallet", "Repack some products", "Move the order to the shipping area"], ans: 1 },
+  { opts: ["Label the package", "Put items in a box or on a pallet", "Move the order to the shipping area", "Repack some products"], ans: 0 },
+  { opts: ["Receive goods in the receiving area", "Label the package", "Move the order to the shipping area", "Put items in a box or on a pallet"], ans: 2 },
+  { opts: ["Report damaged or missing products", "Repack some products", "Put items in a box or on a pallet", "Label the package"], ans: 1 },
+  { opts: ["Repack some products", "Check the quantity", "Follow safety rules", "Report damaged or missing products"], ans: 3 },
+  { opts: ["Follow safety rules", "Put on your PPE", "Keep the work area clean", "Receive goods in the receiving area"], ans: 2 },
+  { opts: ["Keep the work area clean", "Put on your PPE", "Operate a forklift safely", "Follow safety rules"], ans: 3 },
 ];
-
-// For each French item (A–P, index 0–15), the index in MATCH_EN_OPTIONS that is correct
-const MATCH_ANSWERS = [9, 6, 10, 7, 11, 4, 0, 12, 13, 14, 2, 5, 8, 15, 1, 3];
 
 const GAP_ITEMS = [
   { pre: "You must ",              blank: "put on",  post: " your PPE before starting work." },
@@ -297,14 +294,14 @@ VOCAB.forEach((v, i) => {
 // ── Build matching rows ─────────────────────────────────────────────────────
 const matchRows = document.getElementById("match-rows");
 const letters = "ABCDEFGHIJKLMNOP";
-VOCAB.forEach((v, i) => {
-  const opts = MATCH_EN_OPTIONS.map((en, j) =>
+MATCH_ITEMS.forEach((item, i) => {
+  const opts = item.opts.map((en, j) =>
     `<option value="${j}">${en}</option>`
   ).join("");
   matchRows.innerHTML += `
     <div class="match-row">
       <span class="match-letter">${letters[i]}</span>
-      <span class="match-fr">${v.fr}</span>
+      <span class="match-fr">${VOCAB[i].fr}</span>
       <select class="match-select" id="ms-${i}">
         <option value="">— select —</option>
         ${opts}
@@ -314,34 +311,33 @@ VOCAB.forEach((v, i) => {
 
 function checkMatching() {
   let correct = 0;
-  VOCAB.forEach((_, i) => {
+  MATCH_ITEMS.forEach((item, i) => {
     const sel = document.getElementById(`ms-${i}`);
     sel.classList.remove("correct","wrong");
     if (sel.value === "") return;
-    if (parseInt(sel.value) === MATCH_ANSWERS[i]) {
+    if (parseInt(sel.value) === item.ans) {
       sel.classList.add("correct"); correct++;
     } else {
       sel.classList.add("wrong");
     }
   });
-  const total = VOCAB.length;
+  const total = MATCH_ITEMS.length;
   const score = document.getElementById("match-score");
   score.textContent = `${correct} / ${total}`;
   score.className = "score " + (correct === total ? "perfect" : correct >= total * 0.7 ? "good" : "bad");
-  // Show answer key for wrong ones
   const key = document.getElementById("match-key");
   const wrongs = [];
-  VOCAB.forEach((_, i) => {
+  MATCH_ITEMS.forEach((item, i) => {
     const sel = document.getElementById(`ms-${i}`);
-    if (sel.value !== "" && parseInt(sel.value) !== MATCH_ANSWERS[i]) {
-      wrongs.push(`${letters[i]} → ${MATCH_EN_OPTIONS[MATCH_ANSWERS[i]]}`);
+    if (sel.value !== "" && parseInt(sel.value) !== item.ans) {
+      wrongs.push(`${letters[i]} → ${item.opts[item.ans]}`);
     }
   });
   key.textContent = wrongs.length ? "Corrections: " + wrongs.join(" | ") : "";
 }
 
 function resetMatching() {
-  VOCAB.forEach((_, i) => {
+  MATCH_ITEMS.forEach((_, i) => {
     const sel = document.getElementById(`ms-${i}`);
     sel.value = ""; sel.classList.remove("correct","wrong");
   });

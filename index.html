@@ -172,7 +172,7 @@
   <section id="ex-gap">
     <h2>🧩 Exercise 2 – Gap-Fill</h2>
     <p class="instruction">Choose the correct word from the word bank to complete each sentence.</p>
-    <div class="word-bank"><span>Word bank:</span>put on · read · receive · pick · scan · check · use · operate · label · move · report · follow</div>
+    <div class="word-bank" id="word-bank-display"></div>
     <div id="gap-rows"></div>
     <div class="actions">
       <button class="check-btn" onclick="checkGap()">Check answers</button>
@@ -244,21 +244,24 @@ const MATCH_ITEMS = [
   { opts: ["Keep the work area clean", "Put on your PPE", "Operate a forklift safely", "Follow safety rules"], ans: 3 },
 ];
 
+// Word bank shown as reference — alphabetical (shuffled relative to sentence order)
+const GAP_BANK_DISPLAY = "check · follow · label · move · operate · pick · put on · read · receive · report · scan · use";
+
+// Per-item: sentence parts + 4 options + index of correct answer (varied position)
 const GAP_ITEMS = [
-  { pre: "You must ",              blank: "put on",  post: " your PPE before starting work." },
-  { pre: "",                       blank: "read",    post: " the order before you start picking." },
-  { pre: "",                       blank: "receive", post: " goods in the receiving area when the truck arrives." },
-  { pre: "",                       blank: "pick",    post: " the correct items from the shelves." },
-  { pre: "",                       blank: "scan",    post: " the barcode with the scanner." },
-  { pre: "",                       blank: "check",   post: " the quantity of each product." },
-  { pre: "",                       blank: "use",     post: " a pallet jack to move heavy loads." },
-  { pre: "",                       blank: "operate", post: " the forklift safely at all times." },
-  { pre: "",                       blank: "label",   post: " the package before shipping." },
-  { pre: "",                       blank: "move",    post: " the order to the shipping area." },
-  { pre: "",                       blank: "report",  post: " damaged or missing products immediately." },
-  { pre: "",                       blank: "follow",  post: " safety rules at all times." },
+  { pre: "You must ", post: " your PPE before starting work.",              opts: ["check","put on","follow","use"],       ans: 1 },
+  { pre: "",          post: " the order before you start picking.",          opts: ["pick","scan","read","check"],          ans: 2 },
+  { pre: "",          post: " goods in the receiving area when the truck arrives.", opts: ["receive","move","label","check"], ans: 0 },
+  { pre: "",          post: " the correct items from the shelves.",          opts: ["scan","check","receive","pick"],       ans: 3 },
+  { pre: "",          post: " the barcode with the scanner.",                opts: ["check","read","scan","use"],           ans: 2 },
+  { pre: "",          post: " the quantity of each product.",                opts: ["scan","report","read","check"],        ans: 3 },
+  { pre: "",          post: " a pallet jack to move heavy loads.",           opts: ["operate","use","move","put on"],       ans: 1 },
+  { pre: "",          post: " the forklift safely at all times.",            opts: ["use","follow","operate","move"],       ans: 2 },
+  { pre: "",          post: " the package before shipping.",                 opts: ["move","label","put on","check"],       ans: 1 },
+  { pre: "",          post: " the order to the shipping area.",              opts: ["label","operate","receive","move"],    ans: 3 },
+  { pre: "",          post: " damaged or missing products immediately.",     opts: ["report","check","follow","scan"],      ans: 0 },
+  { pre: "",          post: " safety rules at all times.",                   opts: ["check","report","follow","operate"],   ans: 2 },
 ];
-const GAP_BANK = ["put on","read","receive","pick","scan","check","use","operate","label","move","report","follow"];
 
 const TF_ITEMS = [
   { stmt: "An order picker never repacks products.",                   answer: false },
@@ -346,18 +349,16 @@ function resetMatching() {
 }
 
 // ── Build gap-fill rows ─────────────────────────────────────────────────────
+document.getElementById("word-bank-display").innerHTML =
+  `<span>Word bank:</span> ${GAP_BANK_DISPLAY}`;
+
 const gapRows = document.getElementById("gap-rows");
 GAP_ITEMS.forEach((g, i) => {
-  const opts = GAP_BANK.map(w => `<option value="${w}">${w}</option>`).join("");
-  const capitalize = g.pre === "";
-  const displayPre = capitalize
-    ? ""
-    : g.pre;
-  const capNote = capitalize ? `<span style="color:#94a3b8;font-size:0.78rem">[capital]</span> ` : "";
+  const opts = g.opts.map((w, j) => `<option value="${j}">${w}</option>`).join("");
   gapRows.innerHTML += `
     <div class="gap-item">
       <span class="gap-num">${i + 1}.</span>
-      ${capNote}${displayPre}<select class="gap-select" id="gs-${i}">
+      ${g.pre}<select class="gap-select" id="gs-${i}">
         <option value="">—</option>
         ${opts}
       </select>${g.post}
@@ -370,7 +371,7 @@ function checkGap() {
     const sel = document.getElementById(`gs-${i}`);
     sel.classList.remove("correct","wrong");
     if (sel.value === "") return;
-    if (sel.value.toLowerCase() === g.blank.toLowerCase()) {
+    if (parseInt(sel.value) === g.ans) {
       sel.classList.add("correct"); correct++;
     } else {
       sel.classList.add("wrong");
